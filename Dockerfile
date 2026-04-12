@@ -1,9 +1,10 @@
 FROM jenkins/inbound-agent:3355.v388858a_47b_33-17
 
 # Install yq v4
-RUN wget -qO /usr/local/bin/yq \
+RUN curl -fsSL -o /usr/local/bin/yq \
       https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
     && chmod +x /usr/local/bin/yq
+
 
 # Install gh CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
