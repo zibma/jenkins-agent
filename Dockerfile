@@ -1,49 +1,27 @@
-FROM jenkins/inbound-agent:3355.v388858a_47b_33-17
+FROM jenkins/inbound-agent:3283.v92c105e2f819-4-jdk17
 
 USER root
 
-# Install yq v4
-# RUN curl -fsSL -o /usr/local/bin/yq \
-#       https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
-#     && chmod +x /usr/local/bin/yq
+# 1. Consolidate apt installs to keep the image slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    wget \
+    zip \
+    unzip \
+    python3 \
+    python-is-python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install gh CLI (direct binary, no apt needed)
-
-
-USER jenkins
-
-# Update - START
-RUN sudo apt update -y
-# Update - END
-
-# Install Curl - START
-RUN sudo apt install curl -y
-# Install Curl - END
-
-# Install Git - START
-RUN sudo apt install git -y
-# Install Git - END
-
-# Install Wget - START
-RUN sudo apt install wget -y
-# Install Wget - END
-
-# Install Zip - START
-RUN sudo apt install zip -y
-# Install Zip - END
-
-# Install Unzip - START
-RUN sudo apt install unzip -y
-# Install Unzip - END
-
-# Install Python - START
-RUN sudo apt install python3 -y
-RUN sudo apt install python-is-python3 -y
-RUN sudo apt-get -y install python3-pip
+# 2. Set environment variables
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
-# Install Python - END
 
-RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_linux_amd64.tar.gz \
+# 3. Install gh CLI
+RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.42.1/gh_2.42.1_linux_amd64.tar.gz \
     | tar -xz -C /tmp \
-    && mv /tmp/gh_2.72.0_linux_amd64/bin/gh /usr/local/bin/gh \
+    && mv /tmp/gh_2.42.1_linux_amd64/bin/gh /usr/local/bin/gh \
     && rm -rf /tmp/gh_*
+
+# 4. Switch back to the jenkins user at the end
+USER jenkins
