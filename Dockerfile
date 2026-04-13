@@ -1,6 +1,6 @@
 FROM jenkins/inbound-agent:3355.v388858a_47b_33-17
 
-# USER root
+USER root
 
 # Install yq v4
 # RUN curl -fsSL -o /usr/local/bin/yq \
